@@ -5,7 +5,11 @@
 }
 
 .quill-overwrite .ql-editor {
-	@apply p-0 em:text-xl text-zinc-800 font-normal w-full overflow-hidden max-h-[6em];
+	@apply p-0 w-full overflow-hidden em:leading-8 max-h-[6em];
+}
+
+.quill-overwrite .ql-blank::before {
+	@apply left-0;
 }
 
 .quill-overwrite .ql-tooltip {

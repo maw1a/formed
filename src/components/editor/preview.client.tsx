@@ -1,10 +1,11 @@
 import { GearIcon, GlobeIcon, MobileIcon, PlayIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
-import type { Form } from '@prisma/client'
+import type { Form, Prisma } from '@prisma/client'
 import type { UseFormReturn } from 'react-hook-form'
-import { Icons, type Question, QuestionPreview, Tab } from './questions'
-import { useMemo, useRef, useEffect } from 'react'
+import type { QuestionTypes } from './questions/types'
+import { QuestionMap, type Question, QuestionPreview, Tab } from './questions'
+import { useMemo, useRef, useEffect, useState } from 'react'
 import { clamp } from '~/lib/utils'
 import {
 	Dialog,
@@ -14,21 +15,18 @@ import {
 	DialogTitle,
 	DialogTrigger
 } from '~/components/ui/dialog'
-import { QuestionTypes } from './questions/types'
-
-const questions: Record<QuestionTypes, string> = {
-	[QuestionTypes.ShortText]: 'Short Text',
-	[QuestionTypes.LongText]: 'Long Text'
-}
 
 export default function Preview({ form, active }: { form: UseFormReturn<Form>; active: number }) {
-	const { getValues } = form
+	const { getValues, setValue } = form
 	const formValues = getValues()
-	const question = useMemo(() => formValues.questions[active], [active, formValues.questions])
+	const [addContent, setAddContent] = useState(false)
 	const rootRef = useRef<HTMLDivElement>(null)
+	const question = useMemo(() => formValues.questions[active], [active, formValues.questions])
 
 	const handleAddQuestion = (type: QuestionTypes) => {
-		console.log(type)
+		const newQuestions = [...getValues('questions'), QuestionMap[type].defaultValue as Prisma.JsonValue]
+		setValue('questions', newQuestions)
+		setAddContent(false)
 	}
 
 	useEffect(() => {
@@ -53,7 +51,7 @@ export default function Preview({ form, active }: { form: UseFormReturn<Form>; a
 	return (
 		<div className="flex-1 h-full flex flex-col mx-4 gap-4 pb-6" ref={rootRef}>
 			<div className="bg-zinc-100 w-full px-3 py-2 rounded-xl flex items-center gap-3 text-zinc-600">
-				<Dialog>
+				<Dialog open={addContent} onOpenChange={setAddContent}>
 					<DialogTrigger asChild>
 						<Button variant="outline" size="sm">
 							<PlusIcon className="w-4 h-4 mr-1" /> Add content
@@ -65,14 +63,17 @@ export default function Preview({ form, active }: { form: UseFormReturn<Form>; a
 							<DialogDescription>Choose a question type to add to your form.</DialogDescription>
 						</DialogHeader>
 						<div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4">
-							{Object.values(QuestionTypes).map((type) => {
-								const Icon = Icons[type]
+							{Object.keys(QuestionMap).map((_type) => {
+								const type = _type as QuestionTypes
+								const Icon = QuestionMap[type].icon
 								return (
-									<Button key={type} variant="outline" size="sm" onClick={() => handleAddQuestion(type)}>
-										<span className="mr-1">
-											<Icon className="w-4 h-4" />
-										</span>
-										<span>{questions[type]}</span>
+									<Button key={type} variant="ghost" size="sm" onClick={() => handleAddQuestion(type)}>
+										<div className="flex items-center justify-start gap-x-2 w-full">
+											<span className="mr-1">
+												<Icon className="w-4 h-4" />
+											</span>
+											<span>{QuestionMap[type].name}</span>
+										</div>
 									</Button>
 								)
 							})}

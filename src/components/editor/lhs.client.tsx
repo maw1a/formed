@@ -1,9 +1,9 @@
-import type { Form } from '@prisma/client'
+import { useEffect, type Dispatch, type SetStateAction } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
+import type { Form } from '@prisma/client'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '~/components/ui/resizable'
 import { type Question, Tab } from './questions'
-import { useCallback, type Dispatch, type SetStateAction } from 'react'
-import { cn } from '~/lib/utils'
+import { clamp, cn } from '~/lib/utils'
 
 export default function Lhs({
 	form,
@@ -14,29 +14,22 @@ export default function Lhs({
 	active: number
 	setActive: Dispatch<SetStateAction<number>>
 }) {
-	const { getValues, setValue } = form
-	const formValues = getValues()
+	const { watch } = form
+	const questions = watch('questions')
 
-	const handleDelete = useCallback(
-		(idx: number) => {
-			if (formValues.questions.length === 1) return false
-
-			return () => {
-				const q = formValues.questions.slice()
-				q.splice(idx, 1)
-				setValue('questions', q)
-			}
-		},
-		[formValues.questions, setValue]
-	)
+	useEffect(() => {
+		if (active > questions.length - 1) {
+			setActive(0)
+		}
+	}, [questions, active, setActive])
 
 	return (
 		<div className="h-full w-64">
 			<ResizablePanelGroup direction="vertical">
 				<ResizablePanel defaultSize={60} minSize={27}>
-					<div className="bg-zinc-100 rounded-xl p-3 h-full w-full">
-						<div className="flex-1 overflow-hidden">
-							{formValues.questions.map((question, idx) => (
+					<div className="bg-zinc-100 rounded-xl h-full w-full">
+						<div className="flex-1 overflow-y-scroll space-y-1 h-full p-3">
+							{questions.map((question, idx) => (
 								<button
 									key={idx}
 									className={cn(
@@ -45,10 +38,9 @@ export default function Lhs({
 									)}
 									onClick={() => {
 										if (active !== idx) setActive(idx)
-										else console.log('is active:', idx)
 									}}
 								>
-									<Tab question={question as Question} idx={idx} handleDelete={handleDelete(idx)} />
+									<Tab question={question as Question} idx={idx} allowDelete={questions.length > 1} />
 								</button>
 							))}
 						</div>

@@ -10,7 +10,12 @@ export function LongTextPreview({ idx }: { idx: number }) {
 
 	return (
 		<div className="flex flex-col w-full">
-			<Quill name={`questions.${idx}.question`} form={form} />
+			<Quill
+				name={`questions.${idx}.question`}
+				form={form}
+				className="*:!text-zinc-800 *:em:!text-xl"
+				placeholder="Your question here."
+			/>
 			<FormField
 				control={form.control}
 				name={`questions.${idx}.description`}
@@ -29,7 +34,7 @@ export function LongTextPreview({ idx }: { idx: number }) {
 			<Quill
 				name={`questions.${idx}.placeholder`}
 				form={form}
-				className="outline-0 outline-none em:text-2xl text-zinc-400 font-normal em:mt-4 border-b placeholder:italic placeholder:text-zinc-400"
+				className="outline-0 outline-none *:em:!text-2xl *:text-zinc-400 font-normal em:mt-4 border-b placeholder:italic placeholder:text-zinc-400"
 			/>
 		</div>
 	)

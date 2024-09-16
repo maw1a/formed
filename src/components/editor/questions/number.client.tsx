@@ -5,7 +5,7 @@ import type { Form } from '@prisma/client'
 import { FormField } from '~/components/ui/form'
 import { Quill } from '~/components/quill'
 
-export function ShortTextPreview({ idx }: { idx: number }) {
+export function NumberPreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
 
 	return (

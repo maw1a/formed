@@ -1,41 +1,111 @@
-import type { IconType, Json, QuestionTypes } from './types'
+import type * as EditorQuestionTypes from './types'
+import type { Form } from '@prisma/client'
 import {
 	ArrowRightIcon,
+	CalendarIcon,
+	ComponentBooleanIcon,
 	CopyIcon,
 	DotsVerticalIcon,
+	FrameIcon,
+	ListBulletIcon,
 	TextAlignLeftIcon,
 	TextIcon,
 	TrashIcon
 } from '@radix-ui/react-icons'
+import { useFormContext } from 'react-hook-form'
 import { Button } from '~/components/ui/button'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '~/components/ui/dropdown-menu'
 import If from '~/components/If'
 
 import { ShortTextPreview } from './short_text.client'
 import { LongTextPreview } from './long_text.client'
+import { StatementPreview } from './statement.client'
+import { NumberPreview } from './number.client'
+import { MultipleChoicePreview } from './multiple_choice.client'
 
-export type Question = Record<string, Json> & { type: QuestionTypes; question: string }
-
-export const Icons: Record<QuestionTypes, IconType> = {
-	'short-text': TextIcon,
-	'long-text': TextAlignLeftIcon
+export type Question = Record<string, EditorQuestionTypes.Json> & {
+	type: EditorQuestionTypes.QuestionTypes
+	question: string
 }
 
-export const Components: Record<QuestionTypes, (props: { idx: number; question: Question }) => JSX.Element> = {
-	'short-text': ShortTextPreview,
-	'long-text': LongTextPreview
+export const QuestionMap: Record<
+	EditorQuestionTypes.QuestionTypes,
+	{
+		icon: EditorQuestionTypes.IconType
+		preview: (props: { idx: number; question: Question }) => JSX.Element
+		name: string
+		defaultValue: { type: EditorQuestionTypes.QuestionTypes; [k: string]: unknown }
+	}
+> = {
+	'short-text': {
+		name: 'Short Text',
+		icon: TextIcon,
+		preview: ShortTextPreview,
+		defaultValue: {
+			type: 'short-text',
+			question: '...',
+			placeholder: 'Type your answer here...'
+		} as EditorQuestionTypes.ShortText
+	},
+	'long-text': {
+		name: 'Long Text',
+		icon: TextAlignLeftIcon,
+		preview: LongTextPreview,
+		defaultValue: {
+			type: 'long-text',
+			question: '...',
+			placeholder: 'Type your answer here...'
+		} as EditorQuestionTypes.LongText
+	},
+	statement: {
+		name: 'Statement',
+		icon: ComponentBooleanIcon,
+		preview: StatementPreview,
+		defaultValue: { type: 'statement', question: '...' } as EditorQuestionTypes.Statement
+	},
+	number: {
+		name: 'Number',
+		icon: FrameIcon,
+		preview: NumberPreview,
+		defaultValue: {
+			type: 'number',
+			question: '...',
+			placeholder: 'Type your answer here...',
+			min: 0,
+			max: 99999
+		} as EditorQuestionTypes.Number
+	},
+	'multiple-choice': {
+		name: 'Multiple Choice',
+		icon: ListBulletIcon,
+		preview: MultipleChoicePreview,
+		defaultValue: {
+			type: 'multiple-choice',
+			question: '...',
+			options: [{ label: '', value: `option-1` }],
+			multiselect: false
+		} as EditorQuestionTypes.MultipleChoice
+	},
+	'date-picker': {
+		name: 'Date Picker',
+		icon: CalendarIcon,
+		preview: MultipleChoicePreview, // TODO: Add DatePickerPreview
+		defaultValue: { type: 'date-picker', question: '...', format: 'dd/MM/yyyy' } as EditorQuestionTypes.DatePicker
+	}
 }
 
-export function Tab({
-	question,
-	idx,
-	handleDelete
-}: {
-	question: Question
-	idx: number
-	handleDelete: (() => void) | false
-}) {
-	const Icon = Icons[question.type]
+export function Tab({ question, idx, allowDelete }: { question: Question; idx: number; allowDelete: boolean }) {
+	const Icon = QuestionMap[question.type].icon
+
+	const { setValue, getValues } = useFormContext<Form>()
+
+	const handleDelete = () => {
+		if (!allowDelete) return
+
+		const q = getValues('questions').slice()
+		q.splice(idx, 1)
+		setValue('questions', q)
+	}
 
 	return (
 		<>
@@ -57,9 +127,12 @@ export function Tab({
 						<CopyIcon className="w-4 h-4" /> Duplicate
 					</DropdownMenuItem>
 					<If
-						_={!!handleDelete}
+						_={allowDelete}
 						_then={
-							<DropdownMenuItem className="flex items-center gap-2 text-red-500 focus:text-red-600 cursor-pointer">
+							<DropdownMenuItem
+								className="flex items-center gap-2 text-red-500 focus:text-red-600 cursor-pointer"
+								onClick={handleDelete}
+							>
 								<TrashIcon className="w-4 h-4" /> Delete
 							</DropdownMenuItem>
 						}
@@ -71,7 +144,9 @@ export function Tab({
 }
 
 export function QuestionPreview({ question, idx }: { question: Question; idx: number }) {
-	const Component = Components[question.type]
+	if (!question) return null
+
+	const Component = QuestionMap[question.type].preview
 
 	return (
 		<>

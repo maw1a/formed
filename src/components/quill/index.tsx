@@ -2,10 +2,13 @@
 
 import { useEffect } from 'react'
 import type { Path, UseFormReturn } from 'react-hook-form'
-import ReactQuill, { type ReactQuillProps, type Value } from 'react-quill'
+import type { ReactQuillProps, Value } from 'react-quill'
+import { cn } from '~/lib/utils'
+import dynamic from 'next/dynamic'
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
 
 import './styles.css'
-import { cn } from '~/lib/utils'
 
 export function Quill<T extends Record<string, unknown>>({
 	name,
