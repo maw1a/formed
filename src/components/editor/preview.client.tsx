@@ -1,33 +1,109 @@
-import { GearIcon, GlobeIcon, MobileIcon, PlayIcon } from '@radix-ui/react-icons'
+import { GearIcon, GlobeIcon, MobileIcon, PlayIcon, PlusIcon } from '@radix-ui/react-icons'
 import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
 import type { Form } from '@prisma/client'
 import type { UseFormReturn } from 'react-hook-form'
+import { Icons, type Question, QuestionPreview, Tab } from './questions'
+import { useMemo, useRef, useEffect } from 'react'
+import { clamp } from '~/lib/utils'
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger
+} from '~/components/ui/dialog'
+import { QuestionTypes } from './questions/types'
 
-export default function Preview({ form }: { form: UseFormReturn<Form> }) {
+const questions: Record<QuestionTypes, string> = {
+	[QuestionTypes.ShortText]: 'Short Text',
+	[QuestionTypes.LongText]: 'Long Text'
+}
+
+export default function Preview({ form, active }: { form: UseFormReturn<Form>; active: number }) {
 	const { getValues } = form
 	const formValues = getValues()
+	const question = useMemo(() => formValues.questions[active], [active, formValues.questions])
+	const rootRef = useRef<HTMLDivElement>(null)
+
+	const handleAddQuestion = (type: QuestionTypes) => {
+		console.log(type)
+	}
+
+	useEffect(() => {
+		if (!rootRef.current) return
+
+		const resizeObserver = new ResizeObserver((entries) => {
+			for (const entry of entries) {
+				if (entry.target === rootRef.current) {
+					const scale = clamp(entry.contentRect.width / 1024, 0, 1)
+					document.documentElement.style.setProperty('--preview-scale', scale.toString())
+				}
+			}
+		})
+
+		resizeObserver.observe(rootRef.current)
+
+		return () => {
+			resizeObserver.disconnect()
+		}
+	}, [])
 
 	return (
-		<div className="flex-1 h-full flex flex-col mx-4">
+		<div className="flex-1 h-full flex flex-col mx-4 gap-4 pb-6" ref={rootRef}>
 			<div className="bg-zinc-100 w-full px-3 py-2 rounded-xl flex items-center gap-3 text-zinc-600">
-				<Button variant="outline" size="sm">
-					+ Add content
+				<Dialog>
+					<DialogTrigger asChild>
+						<Button variant="outline" size="sm">
+							<PlusIcon className="w-4 h-4 mr-1" /> Add content
+						</Button>
+					</DialogTrigger>
+					<DialogContent className="sm:max-w-screen-md">
+						<DialogHeader>
+							<DialogTitle>Add Question</DialogTitle>
+							<DialogDescription>Choose a question type to add to your form.</DialogDescription>
+						</DialogHeader>
+						<div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-4">
+							{Object.values(QuestionTypes).map((type) => {
+								const Icon = Icons[type]
+								return (
+									<Button key={type} variant="outline" size="sm" onClick={() => handleAddQuestion(type)}>
+										<span className="mr-1">
+											<Icon className="w-4 h-4" />
+										</span>
+										<span>{questions[type]}</span>
+									</Button>
+								)
+							})}
+						</div>
+					</DialogContent>
+				</Dialog>
+				<Separator orientation="vertical" className="h-4" />
+				<Button variant="ghost" size="sm" className="px-1.5">
+					<MobileIcon className="w-5 h-5" />
+				</Button>
+				<Button variant="ghost" size="sm" className="px-1.5">
+					<PlayIcon className="w-5 h-5" />
 				</Button>
 				<Separator orientation="vertical" className="h-4" />
-				<Button variant="ghost" size="sm" className="px-2">
-					<MobileIcon width={18} height={18} />
+				<Button variant="ghost" size="sm" className="px-1.5">
+					<GlobeIcon className="w-5 h-5" />
 				</Button>
-				<Button variant="ghost" size="sm" className="px-2">
-					<PlayIcon width={18} height={18} />
+				<Button variant="ghost" size="sm" className="px-1.5">
+					<GearIcon className="w-5 h-5" />
 				</Button>
-				<Separator orientation="vertical" className="h-4" />
-				<Button variant="ghost" size="sm" className="px-2">
-					<GlobeIcon width={18} height={18} />
-				</Button>
-				<Button variant="ghost" size="sm" className="px-2">
-					<GearIcon width={18} height={18} />
-				</Button>
+			</div>
+			<div className="flex-1 flex items-center">
+				<div className="w-full max-h-full max-w-screen-lg aspect-video border border-zinc-200 rounded-sm m-auto bg-white shadow-lg shadow-zinc-500/10 flex">
+					<div className="w-full h-full">
+						<div className="flex items-center h-full w-full mx-auto em:max-w-3xl text-[clamp(0px,calc(var(--preview-scale)*16px),16px)]">
+							<div className="w-full relative em:mt-8 em:mb-24">
+								<QuestionPreview question={question as Question} idx={active} />
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	)

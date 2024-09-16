@@ -5,7 +5,7 @@ import type { Form } from '@prisma/client'
 import { FormField } from '~/components/ui/form'
 import { Quill } from '~/components/quill'
 
-export function ShortTextPreview({ idx }: { idx: number }) {
+export function LongTextPreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
 
 	return (
@@ -26,19 +26,10 @@ export function ShortTextPreview({ idx }: { idx: number }) {
 					/>
 				)}
 			/>
-			<FormField
-				control={form.control}
+			<Quill
 				name={`questions.${idx}.placeholder`}
-				rules={{ maxLength: 50 }}
-				render={({ field }) => (
-					<input
-						className="outline-0 outline-none em:text-2xl text-zinc-400 font-normal em:mt-4 border-b placeholder:italic placeholder:text-zinc-400"
-						{...field}
-						value={field.value?.toString() ?? ''}
-						onChange={(e) => field.onChange(e.target.value)}
-						maxLength={50}
-					/>
-				)}
+				form={form}
+				className="outline-0 outline-none em:text-2xl text-zinc-400 font-normal em:mt-4 border-b placeholder:italic placeholder:text-zinc-400"
 			/>
 		</div>
 	)

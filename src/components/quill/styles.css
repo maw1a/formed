@@ -1,0 +1,27 @@
+@import 'react-quill/dist/quill.bubble.css';
+
+.quill-overwrite .ql-container {
+	@apply text-[clamp(0px,calc(var(--preview-scale)*16px),16px)];
+}
+
+.quill-overwrite .ql-editor {
+	@apply p-0 em:text-xl text-zinc-800 font-normal w-full overflow-hidden max-h-[6em];
+}
+
+.quill-overwrite .ql-tooltip {
+	@apply bg-zinc-100 border border-zinc-200 shadow-md;
+}
+
+.quill-overwrite .ql-tooltip .ql-tooltip-arrow {
+	@apply !border-b-zinc-200;
+}
+
+.quill-overwrite .ql-toolbar .ql-stroke,
+.quill-overwrite .ql-toolbar .ql-fill {
+	@apply stroke-zinc-500;
+}
+
+.quill-overwrite .ql-toolbar button:hover .ql-stroke,
+.quill-overwrite .ql-toolbar button:hover .ql-fill {
+	@apply stroke-zinc-800;
+}

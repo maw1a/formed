@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import Editor from '~/components/editor'
 import { api } from '~/trpc/server'
 
@@ -6,7 +7,7 @@ export default async function FormPage({ params }: { params: { id: string } }) {
 
 	const form = await api.form.getForm({ id })
 
-	if (!form) throw new Error('Not Found')
+	if (!form) notFound()
 
 	return (
 		<div className="flex h-full w-screen flex-col overflow-hidden px-4 pb-4">

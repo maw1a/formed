@@ -48,7 +48,7 @@ export default function Header({ session, form }: { session: Session; form: UseF
 				<BreadcrumbList>
 					<BreadcrumbItem>
 						<BreadcrumbLink href="/" className="flex items-center gap-1.5">
-							<TokensIcon width={18} height={18} /> Home
+							<TokensIcon className="h-4 w-4" /> Home
 						</BreadcrumbLink>
 					</BreadcrumbItem>
 					<BreadcrumbSeparator />

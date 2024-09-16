@@ -1,11 +1,12 @@
 import type { TextIcon } from '@radix-ui/react-icons'
 
-export type Json = string | number | object | Json[]
+export type Json = string | number | object | Record<string, JSON> | Json[]
 
 export type IconType = typeof TextIcon
 
 export enum QuestionTypes {
-	ShortText = 'short-text'
+	ShortText = 'short-text',
+	LongText = 'long-text'
 }
 
 export type ShortText = {

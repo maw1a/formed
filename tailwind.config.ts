@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { type Config } from 'tailwindcss'
 import { fontFamily } from 'tailwindcss/defaultTheme'
 
@@ -58,5 +63,17 @@ export default {
 			}
 		}
 	},
-	plugins: [require('tailwindcss-animate')]
+	plugins: [
+		require('tailwindcss-animate'),
+		require('tailwindcss/plugin')(function ({ addVariant }: any) {
+			addVariant('em', ({ container }: any) => {
+				container.walkRules((rule: any) => {
+					rule.selector = `.em\\:${rule.selector.slice(1)}`
+					rule.walkDecls((decl: any) => {
+						decl.value = decl.value.replace('rem', 'em')
+					})
+				})
+			})
+		})
+	]
 } satisfies Config

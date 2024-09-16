@@ -5,9 +5,5 @@ import Main from './main.client'
 export default async function Editor({ form }: { form: Form }) {
 	const session = await getServerAuthSession()
 
-	return (
-		<>
-			<Main form={form} session={session!} />
-		</>
-	)
+	return <Main form={form} session={session!} />
 }
