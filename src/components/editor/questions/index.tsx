@@ -22,6 +22,7 @@ import { LongTextPreview } from './long_text.client'
 import { StatementPreview } from './statement.client'
 import { NumberPreview } from './number.client'
 import { MultipleChoicePreview } from './multiple_choice.client'
+import { DatePickerPreview } from './date_picker.client'
 
 export type Question = Record<string, EditorQuestionTypes.Json> & {
 	type: EditorQuestionTypes.QuestionTypes
@@ -89,7 +90,7 @@ export const QuestionMap: Record<
 	'date-picker': {
 		name: 'Date Picker',
 		icon: CalendarIcon,
-		preview: MultipleChoicePreview, // TODO: Add DatePickerPreview
+		preview: DatePickerPreview,
 		defaultValue: { type: 'date-picker', question: '...', format: 'dd/MM/yyyy' } as EditorQuestionTypes.DatePicker
 	}
 }

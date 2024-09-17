@@ -51,7 +51,7 @@ export type DatePicker = {
 	type: QuestionTypes.DatePicket
 	question: string
 	description?: string
-	format: 'dd/MM/yyyy' | 'MM/dd/yyyy' | 'yyyy/MM1/dd'
+	format: 'dd/MM/yyyy' | 'MM/dd/yyyy' | 'yyyy/MM/dd'
 	min?: Date
 	max?: Date
 }
