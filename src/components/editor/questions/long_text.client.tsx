@@ -9,11 +9,11 @@ export function LongTextPreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
 
 	return (
-		<div className="flex flex-col w-full">
+		<>
 			<Quill
 				name={`questions.${idx}.question`}
 				form={form}
-				className="*:!text-zinc-800 *:em:!text-xl"
+				className="font-responsive *:!text-zinc-800 *:em:!text-xl"
 				placeholder="Your question here."
 			/>
 			<FormField
@@ -34,8 +34,8 @@ export function LongTextPreview({ idx }: { idx: number }) {
 			<Quill
 				name={`questions.${idx}.placeholder`}
 				form={form}
-				className="outline-0 outline-none *:em:!text-2xl *:text-zinc-400 font-normal em:mt-4 border-b placeholder:italic placeholder:text-zinc-400"
+				className="font-responsive outline-0 outline-none *:em:!text-2xl *:text-zinc-400 font-normal em:mt-4 border-b placeholder:italic placeholder:text-zinc-400"
 			/>
-		</div>
+		</>
 	)
 }

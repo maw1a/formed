@@ -1,0 +1,17 @@
+@import 'react-phone-number-input/style.css';
+
+.PhoneInput-overwrite .PhoneInputCountry {
+	@apply em:py-2 em:px-0.5 border-b border-b-zinc-300;
+}
+
+.PhoneInput-overwrite .PhoneInputCountryIcon {
+	@apply em:rounded-[0.25em] overflow-hidden em:mr-2;
+}
+
+.PhoneInput-overwrite .PhoneInputCountrySelectArrow {
+	@apply em:w-3 em:h-3 em:mb-1;
+}
+
+.PhoneInput-overwrite .PhoneInputInput {
+	@apply outline-none em:text-3xl em:leading-normal em:px-0.5 border-b border-b-zinc-300;
+}

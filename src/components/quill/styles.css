@@ -1,11 +1,11 @@
 @import 'react-quill/dist/quill.bubble.css';
 
-.quill-overwrite .ql-container {
+.quill-overwrite.font-responsive .ql-container {
 	@apply text-[clamp(0px,calc(var(--preview-scale)*16px),16px)];
 }
 
 .quill-overwrite .ql-editor {
-	@apply p-0 w-full overflow-hidden em:leading-8 max-h-[6em];
+	@apply p-0 w-full overflow-hidden em:leading-8;
 }
 
 .quill-overwrite .ql-blank::before {

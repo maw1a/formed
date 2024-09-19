@@ -10,8 +10,8 @@ export default async function FormPage({ params }: { params: { id: string } }) {
 	if (!form) notFound()
 
 	return (
-		<div className="flex h-full w-screen flex-col overflow-hidden px-4 pb-4">
+		<>
 			<Editor form={form} />
-		</div>
+		</>
 	)
 }

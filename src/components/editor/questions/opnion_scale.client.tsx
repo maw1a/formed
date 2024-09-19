@@ -4,9 +4,14 @@ import { useFormContext } from 'react-hook-form'
 import type { Form } from '@prisma/client'
 import { FormField } from '~/components/ui/form'
 import { Quill } from '~/components/quill'
+import { Button } from '~/components/ui/button'
+import { Cross2Icon } from '@radix-ui/react-icons'
+import If from '~/components/If'
 
-export function ShortTextPreview({ idx }: { idx: number }) {
+export function OpinionScalePreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
+	const start = form.watch(`questions.${idx}.start`) as number
+	const end = form.watch(`questions.${idx}.end`) as number
 
 	return (
 		<>
@@ -31,20 +36,17 @@ export function ShortTextPreview({ idx }: { idx: number }) {
 					/>
 				)}
 			/>
-			<FormField
-				control={form.control}
-				name={`questions.${idx}.placeholder`}
-				rules={{ maxLength: 50 }}
-				render={({ field }) => (
-					<input
-						className="outline-0 outline-none em:text-2xl text-zinc-400 font-normal em:mt-4 border-b"
-						{...field}
-						value={field.value?.toString() ?? ''}
-						onChange={(e) => field.onChange(e.target.value)}
-						maxLength={50}
-					/>
-				)}
-			/>
+			<div className="text-zinc-400 font-normal em:mt-8 flex gap-2">
+				{Array.from({ length: end - start + 1 }, (_, index) => (
+					<button
+						key={index}
+						disabled
+						className="flex items-center justify-center flex-1 em:h-14 border border-zinc-300 bg-zinc-100 em:rounded-[0.25em]"
+					>
+						<span className="em:text-xl text-zinc-500">{index + start}</span>
+					</button>
+				))}
+			</div>
 		</>
 	)
 }

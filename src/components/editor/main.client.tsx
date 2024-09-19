@@ -14,14 +14,20 @@ export default function Main({ session, form: defaultForm }: { session: Session;
 	const form = useForm<TForm>({ defaultValues: defaultForm })
 	const [active, setActive] = useState(0)
 
+	function onSubmit(values: TForm) {
+		console.log(values)
+	}
+
 	return (
 		<Form {...form}>
-			<Header session={session} form={form} />
-			<main className="flex-1 flex">
-				<Lhs form={form} active={active} setActive={setActive} />
-				<Preview form={form} active={active} />
-				<Rhs form={form} active={active} />
-			</main>
+			<form className="flex h-full w-screen flex-col overflow-hidden px-4 pb-4" onSubmit={form.handleSubmit(onSubmit)}>
+				<Header session={session} form={form} />
+				<main className="flex-1 flex">
+					<Lhs form={form} active={active} setActive={setActive} />
+					<Preview form={form} active={active} />
+					<Rhs form={form} active={active} />
+				</main>
+			</form>
 		</Form>
 	)
 }

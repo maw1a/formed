@@ -13,9 +13,9 @@ export function DatePickerPreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
 
 	return (
-		<div className="flex flex-col w-full">
+		<>
 			<Quill
-				className="*:!text-zinc-800 *:em:!text-xl"
+				className="*:!text-zinc-800 *:em:!text-xl font-responsive"
 				name={`questions.${idx}.question`}
 				form={form}
 				placeholder="Your question here."
@@ -58,6 +58,6 @@ export function DatePickerPreview({ idx }: { idx: number }) {
 						</Fragment>
 					))}
 			</div>
-		</div>
+		</>
 	)
 }

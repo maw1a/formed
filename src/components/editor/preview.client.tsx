@@ -3,8 +3,8 @@ import { Button } from '../ui/button'
 import { Separator } from '../ui/separator'
 import type { Form, Prisma } from '@prisma/client'
 import type { UseFormReturn } from 'react-hook-form'
-import type { QuestionTypes } from './questions/types'
-import { QuestionMap, type Question, QuestionPreview, Tab } from './questions'
+import type { Question, QuestionTypes } from './questions/types'
+import { QuestionMap, QuestionPreview } from './questions'
 import { useMemo, useRef, useEffect, useState } from 'react'
 import { clamp } from '~/lib/utils'
 import {
@@ -97,10 +97,12 @@ export default function Preview({ form, active }: { form: UseFormReturn<Form>; a
 			</div>
 			<div className="flex-1 flex items-center">
 				<div className="w-full max-h-full max-w-screen-lg aspect-video border border-zinc-200 rounded-sm m-auto bg-white shadow-lg shadow-zinc-500/10 flex">
-					<div className="w-full h-full">
-						<div className="flex items-center h-full w-full mx-auto em:max-w-3xl text-[clamp(0px,calc(var(--preview-scale)*16px),16px)]">
-							<div className="w-full relative em:mt-8 em:mb-24">
-								<QuestionPreview question={question as Question} idx={active} />
+					<div className="w-full flex items-center">
+						<div className="flex w-full max-h-full overflow-y-scroll scrollbar-none scroll-smooth text-[clamp(0px,calc(var(--preview-scale)*16px),16px)]">
+							<div className="w-full mx-auto em:max-w-3xl">
+								<div className="w-full em:pt-8 em:pb-24 flex flex-col justify-center">
+									<QuestionPreview question={question as Question} idx={active} />
+								</div>
 							</div>
 						</div>
 					</div>

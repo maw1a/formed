@@ -65,6 +65,7 @@ export default {
 	},
 	plugins: [
 		require('tailwindcss-animate'),
+		require('tailwind-scrollbar'),
 		require('tailwindcss/plugin')(function ({ addVariant }: any) {
 			addVariant('em', ({ container }: any) => {
 				container.walkRules((rule: any) => {

@@ -11,9 +11,9 @@ export function StatementPreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
 
 	return (
-		<div className="flex flex-col w-full">
+		<>
 			<Quill
-				className="*:!text-zinc-800 *:em:!text-xl"
+				className="font-responsive *:!text-zinc-800 *:em:!text-xl"
 				name={`questions.${idx}.question`}
 				form={form}
 				placeholder="Your question here."
@@ -45,6 +45,6 @@ export function StatementPreview({ idx }: { idx: number }) {
 					</div>
 				</Button>
 			</div>
-		</div>
+		</>
 	)
 }

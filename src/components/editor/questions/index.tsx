@@ -6,11 +6,17 @@ import {
 	ComponentBooleanIcon,
 	CopyIcon,
 	DotsVerticalIcon,
+	DropdownMenuIcon,
+	EnvelopeClosedIcon,
 	FrameIcon,
 	ListBulletIcon,
+	MobileIcon,
+	RulerHorizontalIcon,
+	SewingPinIcon,
 	TextAlignLeftIcon,
 	TextIcon,
-	TrashIcon
+	TrashIcon,
+	UploadIcon
 } from '@radix-ui/react-icons'
 import { useFormContext } from 'react-hook-form'
 import { Button } from '~/components/ui/button'
@@ -23,17 +29,18 @@ import { StatementPreview } from './statement.client'
 import { NumberPreview } from './number.client'
 import { MultipleChoicePreview } from './multiple_choice.client'
 import { DatePickerPreview } from './date_picker.client'
-
-export type Question = Record<string, EditorQuestionTypes.Json> & {
-	type: EditorQuestionTypes.QuestionTypes
-	question: string
-}
+import { EmailPreview } from './email.client'
+import { PhonePreview } from './phone.client'
+import { AddressPreview } from './address.client'
+import { OpinionScalePreview } from './opnion_scale.client'
+import { DropdownPreview } from './dropdown.client'
+import { FileUploadPreview } from './file_upload.client'
 
 export const QuestionMap: Record<
 	EditorQuestionTypes.QuestionTypes,
 	{
 		icon: EditorQuestionTypes.IconType
-		preview: (props: { idx: number; question: Question }) => JSX.Element
+		preview: (props: { idx: number; question: EditorQuestionTypes.Question }) => JSX.Element
 		name: string
 		defaultValue: { type: EditorQuestionTypes.QuestionTypes; [k: string]: unknown }
 	}
@@ -76,6 +83,34 @@ export const QuestionMap: Record<
 			max: 99999
 		} as EditorQuestionTypes.Number
 	},
+	email: {
+		name: 'Email',
+		icon: EnvelopeClosedIcon,
+		preview: EmailPreview,
+		defaultValue: {
+			type: 'email',
+			question: '...'
+		} as EditorQuestionTypes.EmailPreview
+	},
+	phone: {
+		name: 'Phone',
+		icon: MobileIcon,
+		preview: PhonePreview,
+		defaultValue: {
+			type: 'phone',
+			question: '...'
+		} as EditorQuestionTypes.PhonePreview
+	},
+	address: {
+		name: 'Address',
+		icon: SewingPinIcon,
+		preview: AddressPreview,
+		defaultValue: {
+			type: 'address',
+			question: '...',
+			required: []
+		} as EditorQuestionTypes.AddressPreview
+	},
 	'multiple-choice': {
 		name: 'Multiple Choice',
 		icon: ListBulletIcon,
@@ -92,10 +127,41 @@ export const QuestionMap: Record<
 		icon: CalendarIcon,
 		preview: DatePickerPreview,
 		defaultValue: { type: 'date-picker', question: '...', format: 'dd/MM/yyyy' } as EditorQuestionTypes.DatePicker
+	},
+	'opinion-scale': {
+		name: 'Opinion Scale',
+		icon: RulerHorizontalIcon,
+		preview: OpinionScalePreview,
+		defaultValue: {
+			type: 'opinion-scale',
+			question: '...',
+			start: 0,
+			end: 5
+		} as EditorQuestionTypes.OpinionScalePreview
+	},
+	dropdown: {
+		name: 'Dropdown',
+		icon: DropdownMenuIcon,
+		preview: DropdownPreview,
+		defaultValue: { type: 'dropdown', question: '...', options: '' } as EditorQuestionTypes.DropdownPreview
+	},
+	'file-upload': {
+		name: 'File Upload',
+		icon: UploadIcon,
+		preview: FileUploadPreview,
+		defaultValue: { type: 'file-upload', question: '...' } as EditorQuestionTypes.FileUploadPreview
 	}
 }
 
-export function Tab({ question, idx, allowDelete }: { question: Question; idx: number; allowDelete: boolean }) {
+export function Tab({
+	question,
+	idx,
+	allowDelete
+}: {
+	question: EditorQuestionTypes.Question
+	idx: number
+	allowDelete: boolean
+}) {
 	const Icon = QuestionMap[question.type].icon
 
 	const { setValue, getValues } = useFormContext<Form>()
@@ -110,7 +176,7 @@ export function Tab({ question, idx, allowDelete }: { question: Question; idx: n
 
 	return (
 		<>
-			<span className="flex items-center justify-between bg-blue-200 font-medium rounded-md w-12 h-6 pl-1 pr-1.5">
+			<span className="flex items-center justify-between bg-blue-600 text-white font-medium rounded-md w-12 h-6 pl-1 pr-1.5">
 				<Icon className="w-4 h-4" />
 				{idx + 1}
 			</span>
@@ -144,18 +210,18 @@ export function Tab({ question, idx, allowDelete }: { question: Question; idx: n
 	)
 }
 
-export function QuestionPreview({ question, idx }: { question: Question; idx: number }) {
+export function QuestionPreview({ question, idx }: { question: EditorQuestionTypes.Question; idx: number }) {
 	if (!question) return null
 
 	const Component = QuestionMap[question.type].preview
 
 	return (
-		<>
+		<div className="flex flex-col w-full relative">
 			<div className="absolute left-0 top-0 text-blue-700 -translate-x-full em:h-9 em:pb-0.5 flex items-center">
 				<span className="em:text-base">{idx + 1}</span>
 				<ArrowRightIcon className="em:h-5 em:w-5 em:ml-1 em:mr-2" />
 			</div>
 			<Component question={question} idx={idx} />
-		</>
+		</div>
 	)
 }

@@ -2,8 +2,9 @@ import { useEffect, type Dispatch, type SetStateAction } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import type { Form } from '@prisma/client'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '~/components/ui/resizable'
-import { type Question, Tab } from './questions'
-import { clamp, cn } from '~/lib/utils'
+import { Tab } from './questions'
+import { cn } from '~/lib/utils'
+import type { Question } from './questions/types'
 
 export default function Lhs({
 	form,

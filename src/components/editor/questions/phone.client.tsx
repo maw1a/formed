@@ -4,8 +4,9 @@ import { useFormContext } from 'react-hook-form'
 import type { Form } from '@prisma/client'
 import { FormField } from '~/components/ui/form'
 import { Quill } from '~/components/quill'
+import { PhoneInput } from '~/components/phone'
 
-export function ShortTextPreview({ idx }: { idx: number }) {
+export function PhonePreview({ idx }: { idx: number }) {
 	const form = useFormContext<Form>()
 
 	return (
@@ -31,20 +32,14 @@ export function ShortTextPreview({ idx }: { idx: number }) {
 					/>
 				)}
 			/>
-			<FormField
-				control={form.control}
-				name={`questions.${idx}.placeholder`}
-				rules={{ maxLength: 50 }}
-				render={({ field }) => (
-					<input
-						className="outline-0 outline-none em:text-2xl text-zinc-400 font-normal em:mt-4 border-b"
-						{...field}
-						value={field.value?.toString() ?? ''}
-						onChange={(e) => field.onChange(e.target.value)}
-						maxLength={50}
-					/>
-				)}
-			/>
+			<div className="em:mt-4 w-full">
+				<PhoneInput
+					disabled
+					onChange={function (value): void {
+						console.log(value)
+					}}
+				/>
+			</div>
 		</>
 	)
 }
